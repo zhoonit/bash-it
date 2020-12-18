@@ -26,7 +26,11 @@ function _git-short-sha {
 
 # Try the checked-out branch first to avoid collision with branches pointing to the same ref.
 function _git-friendly-ref {
-    _git-branch || _git-tag || _git-commit-description || _git-short-sha
+    local ret
+    local desc
+    ret=$(_git-branch || _git-tag || _git-commit-description || _git-short-sha)
+    desc=$(git log --pretty=format:'%<(30,trunc)%s' -1 | awk '{$1=$1;print}' 2> /dev/null)
+    echo "${ret} | ${desc}"
 }
 
 function _git-num-remotes {
